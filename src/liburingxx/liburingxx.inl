@@ -152,10 +152,10 @@ inline int enter(unsigned int fd, unsigned int to_submit, unsigned int min_compl
     return ret;
 }
 
-inline int enter2(unsigned int fd, unsigned int to_submit, unsigned int min_complete, unsigned int flags, sigset_t* sig, size_t sz)
+inline int enter2(unsigned int fd, unsigned int to_submit, unsigned int min_complete, unsigned int flags, void* arg, size_t sz)
 {
     int ret;
-    ret = io_uring_enter2(fd, to_submit, min_complete, flags, sig, sz);
+    ret = io_uring_enter2(fd, to_submit, min_complete, flags, arg, sz);
     if (ret < 0) {
         throw std::system_error(-ret, std::system_category(), "io_uring_enter2");
     }
@@ -258,9 +258,9 @@ inline void prep_bind(sqe* sqe, int sockfd, sockaddr* addr, socklen_t addrlen) n
     io_uring_prep_bind(sqe, sockfd, addr, addrlen);
 }
 
-inline void prep_cancel(sqe* sqe, int fd, unsigned int flags) noexcept
+inline void prep_cancel(sqe* sqe, void* user_data, unsigned int flags) noexcept
 {
-    io_uring_prep_cancel(sqe, fd, flags);
+    io_uring_prep_cancel(sqe, user_data, flags);
 }
 
 inline void prep_cancel64(sqe* sqe, std::uint64_t user_data, int flags) noexcept
