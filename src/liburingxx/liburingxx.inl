@@ -162,7 +162,11 @@ inline int enter2(unsigned int fd, unsigned int to_submit, unsigned int min_comp
     return ret;
 }
 
-template<void (*Func)(cqe* cqe)>
+template<auto Func>
+requires requires(cqe* c)
+{
+    { Func(c) } noexcept -> std::same_as<void>;
+}
 inline unsigned for_each_cqe(ring* ring, cqe* cqe)
 {
     unsigned head;
@@ -174,8 +178,12 @@ inline unsigned for_each_cqe(ring* ring, cqe* cqe)
     return i;
 }
 
-template<void (*Func)(cqe* cqe)>
-inline void handle_cqes(ring* ring, cqe* cqe)
+template<auto Func>
+requires requires(cqe* c)
+{
+    { Func(c) } noexcept -> std::same_as<void>;
+}
+inline void handle_cqes(ring* ring, cqe* cqr)
 {
     unsigned i;
     i = for_each_cqe<Func>(ring, cqe);

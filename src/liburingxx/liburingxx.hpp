@@ -89,8 +89,19 @@ inline int enter(unsigned int fd, unsigned int to_submit, unsigned int min_compl
 
 inline int enter2(unsigned int fd, unsigned int to_submit, unsigned int min_complete, unsigned int flags, void* arg, size_t sz);
 
-template<void (*F)(cqe* cqe)>
-inline void for_each_cqe(ring* ring, unsigned head, cqe* cqe);
+template<auto Func>
+requires requires(cqe* c)
+{
+    { Func(c) } noexcept -> std::same_as<void>;
+}
+inline void for_each_cqe(ring* ring, cqe* cqe);
+
+template<auto Func>
+requires requires(cqe* c)
+{
+    { Func(c) } noexcept -> std::same_as<void>;
+}
+inline void handle_cqes(ring* ring, cqe* cqe);
 
 inline void free_buf_ring(ring* ring, buf_ring* br, unsigned int nentries, int bgid);
 
