@@ -89,6 +89,9 @@ inline int enter(unsigned int fd, unsigned int to_submit, unsigned int min_compl
 
 inline int enter2(unsigned int fd, unsigned int to_submit, unsigned int min_complete, unsigned int flags, void* arg, size_t sz);
 
+template<void (*F)(cqe* cqe)>
+inline void for_each_cqe(ring* ring, unsigned head, cqe* cqe);
+
 inline void free_buf_ring(ring* ring, buf_ring* br, unsigned int nentries, int bgid);
 
 inline void free_probe(probe* probe) noexcept;
@@ -208,9 +211,23 @@ inline void prep_poll_add(sqe* sqe, int fd, unsigned poll_mask) noexcept;
 
 inline void prep_poll_multishot(sqe* sqe, int fd, unsigned poll_mask) noexcept;
 
-inline void prep_poll_remove(sqe* sqe, std::uint64_t user_data) noexcept;
+template<typename T>
+inline void prep_poll_remove(sqe* sqe, T user_data) noexcept;
 
-inline void prep_poll_update(sqe* sqe, std::uint64_t old_user_data, std::uint64_t new_user_data, unsigned poll_mask, unsigned flags) noexcept;
+template<typename T>
+inline void prep_poll_remove(sqe sqe, T* user_data) noexcept;
+
+template<typename T, typename U>
+inline void prep_poll_update(sqe* sqe, T old_user_data, U new_user_data, unsigned poll_mask, unsigned flags) noexcept;
+
+template<typename T, typename U>
+inline void prep_poll_update(sqe* sqe, T* old_user_data, U new_user_data, unsigned poll_mask, unsigned flags) noexcept;
+
+template<typename T, typename U>
+inline void prep_poll_update(sqe* sqe, T old_user_data, U* new_user_data, unsigned poll_mask, unsigned flags) noexcept;
+
+template<typename T, typename U>
+inline void prep_poll_update(sqe* sqe, T* old_user_data, U* new_user_data, unsigned poll_mask, unsigned flags) noexcept;
 
 inline void prep_provide_buffers(sqe* sqe, void* addr, int len, int nr, int bgid, int bid) noexcept;
 
@@ -278,9 +295,17 @@ inline void prep_tee(sqe* sqe, int fd_in, int fd_out, unsigned int nbytes, unsig
 
 inline void prep_timeout(sqe* sqe, kernel_timespec* ts, unsigned count, unsigned flags) noexcept;
 
-inline void prep_timeout_remove(sqe* sqe, std::uint64_t user_data, unsigned flags) noexcept;
+template<typename T>
+inline void prep_timeout_remove(sqe* sqe, T user_data, unsigned flags) noexcept;
 
-inline void prep_timeout_update(sqe* sqe, kernel_timespec* ts, std::uint64_t user_data, unsigned flags) noexcept;
+template<typename T>
+inline void prep_timeout_remove(sqe* sqe, T* user_data, unsigned flags) noexcept;
+
+template<typename T>
+inline void prep_timeout_update(sqe* sqe, kernel_timespec* ts, T user_data, unsigned flags) noexcept;
+
+template<typename T>
+inline void prep_timeout_update(sqe* sqe, kernel_timespec* ts, T* user_data, unsigned flags) noexcept;
 
 inline void prep_unlink(sqe* sqe, const char* path, int flags) noexcept;
 
@@ -298,11 +323,11 @@ inline void prep_writev2(sqe* sqe, int fd, const iovec* iovecs, unsigned nr_vecs
 
 inline void queue_exit(ring* ring) noexcept;
 
-inline void queue_init(unsigned entries, ring* ring, unsigned flags) noexcept;
+inline void queue_init(unsigned entries, ring* ring, unsigned flags);
 
-inline void queue_init_mem(unsigned entries, ring* ring, ring_params* params, void* buf, size_t buf_size) noexcept;
+inline int queue_init_mem(unsigned entries, ring* ring, ring_params* params, void* buf, size_t buf_size);
 
-inline void queue_init_params(unsigned entries, ring* ring, ring_params* params, void* buf, size_t buf_size) noexcept;
+inline void queue_init_params(unsigned entries, ring* ring, ring_params* params, void* buf, size_t buf_size);
 
 inline cmsghdr* recvmsg_cmsg_firsthdr(recvmsg_out* o, msghdr* msgh) noexcept;
 
@@ -354,13 +379,13 @@ inline void register_napi(ring* ring, napi* napi);
 
 inline void register_reg_wait(ring* ring, reg_wait* reg);
 
-inline void register_ring_fd(ring*);
+inline void register_ring_fd(ring* ring);
 
 inline int register_sync_cancel(ring* ring, sync_cancel_reg* reg);
 
 inline void resize_rings(ring* ring, ring_params* p);
 
-inline int setup(std::int32_t entries, ring_params* p);
+inline int setup(std::int32_t entries, ring_params* params);
 
 inline buf_ring* setup_buf_ring(ring* ring, unsigned int nentries, int bgid, unsigned int flags, int* err) noexcept;
 
@@ -400,17 +425,31 @@ inline int submit_and_wait_timeout(ring* ring, cqe** cqe_ptr, unsigned wait_nr, 
 
 inline void unregister_buf_ring(ring* ring, int bgid);
 
+inline int unregister_buf_ring_no_except(ring* ring, int bgid) noexcept;
+
 inline void unregister_buffers(ring* ring);
+
+inline int unregister_buffers_no_except(ring* ring) noexcept;
 
 inline void unregister_eventfd(ring* ring);
 
+inline int unregister_eventfd_no_except(ring* ring) noexcept;
+
 inline void unregister_files(ring* ring);
+
+inline int unregister_files_no_except(ring* ring) noexcept;
 
 inline void unregister_iowq_aff(ring* ring);
 
+inline int unregister_iowq_aff_no_except(ring* ring) noexcept;
+
 inline void unregister_napi(ring* ring, napi* napi);
 
+inline int unregister_napi_no_except(ring* ring, napi* napi) noexcept;
+
 inline void unregister_ring_fd(ring* ring);
+
+inline int unregister_ring_fd_no_except(ring* ring) noexcept;
 
 inline void wait_cqe(ring* ring, cqe** cqe_ptr);
 
