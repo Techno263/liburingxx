@@ -2,6 +2,7 @@
 
 #include <liburing.h>
 #include <cstdint>
+#include <concepts>
 
 namespace io_uring {
 
