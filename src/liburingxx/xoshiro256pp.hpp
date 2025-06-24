@@ -8,8 +8,10 @@ namespace io_uring {
 
 class xoshiropp {
 public:
-    xoshiropp();
+    xoshiropp() = delete;
+
     xoshiropp(const xoshiropp&) = delete;
+
     xoshiropp(xoshiropp&&) noexcept = default;
 
     explicit xoshiropp(const std::uint64_t s[4]) noexcept;
@@ -17,6 +19,7 @@ public:
     xoshiropp(std::uint64_t s0, std::uint64_t s1, std::uint64_t s2, std::uint64_t s3) noexcept;
 
     xoshiropp& operator=(const xoshiropp&) = delete;
+
     xoshiropp& operator=(xoshiropp&&) noexcept = default;
 
     ~xoshiropp() noexcept = default;

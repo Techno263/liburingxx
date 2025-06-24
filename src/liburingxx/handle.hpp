@@ -7,12 +7,15 @@ namespace io_uring {
 class handle {
 public:
     handle() = delete;
+
     handle(const handle&) = default;
+
     handle(handle&&) noexcept = default;
 
     handle(std::uint32_t index, std::uint32_t version);
 
     handle& operator=(const handle&) = default;
+
     handle& operator=(handle&&) noexcept = default;
 
     ~handle() noexcept = default;

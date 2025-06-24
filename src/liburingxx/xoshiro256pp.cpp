@@ -17,11 +17,6 @@ constexpr const uint64_t LONG_JUMP[] = { 0x76e15d3efefdcbbf, 0xc5004e441c522fb3,
 
 }
 
-xoshiropp::xoshiropp() noexcept
-{
-
-}
-
 xoshiropp::xoshiropp(const std::uint64_t s[4]) noexcept
 {
     std::memcpy(this->s, s, sizeof(std::uint64_t[4]));
