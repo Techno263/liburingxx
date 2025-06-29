@@ -142,9 +142,9 @@ inline void prep_close(sqe* sqe, int fd) noexcept;
 
 inline void prep_close_direct(sqe* sqe, unsigned file_index) noexcept;
 
-inline void prep_cmd_sock(sqe* sqe, int cmd_op, int fd, int level, int optname, void* optval, int optlen) noexcept;
-
 inline void prep_cmd_discard(sqe* sqe, int fd, std::uint64_t offset, std::uint64_t nbytes) noexcept;
+
+inline void prep_cmd_sock(sqe* sqe, int cmd_op, int fd, int level, int optname, void* optval, int optlen) noexcept;
 
 inline void prep_connect(sqe* sqe, int sockfd, const sockaddr* addr, socklen_t addrlen) noexcept;
 

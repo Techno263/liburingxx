@@ -311,14 +311,14 @@ inline void prep_close_direct(sqe* sqe, unsigned file_index) noexcept
     io_uring_prep_close_direct(sqe, file_index);
 }
 
-inline void prep_cmd_sock(sqe* sqe, int cmd_op, int fd, int level, int optname, void* optval, int optlen) noexcept
-{
-    io_uring_prep_cmd_sock(sqe, cmd_op, fd, level, optname, optval, optlen);
-}
-
 inline void prep_cmd_discard(sqe* sqe, int fd, std::uint64_t offset, std::uint64_t nbytes) noexcept
 {
     io_uring_prep_cmd_discard(sqe, fd, offset, nbytes);
+}
+
+inline void prep_cmd_sock(sqe* sqe, int cmd_op, int fd, int level, int optname, void* optval, int optlen) noexcept
+{
+    io_uring_prep_cmd_sock(sqe, cmd_op, fd, level, optname, optval, optlen);
 }
 
 inline void prep_connect(sqe* sqe, int sockfd, const sockaddr* addr, socklen_t addrlen) noexcept

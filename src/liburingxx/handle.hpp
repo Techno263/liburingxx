@@ -29,7 +29,7 @@ private:
     std::uint32_t _version;
 };
 
-// Ensure the handle is 8 bytes (64 bits) in size
+// Ensure the handle is 8 bytes (64 bits) in size, so it can git in SQE/CQE user_data
 static_assert(sizeof(handle) == 8);
 
 }
